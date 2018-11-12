@@ -6,7 +6,7 @@ Imprimir una lista de 5 productos en la salida estándar en forma tabular
 incluyendo el nombre del producto y su precio.
 """
 
-producto1 = "Automovil"
+producto1 = "Automóvil"
 precio1 = 150000.00
 producto2 = "Bicicleta"
 precio2 = 13000.00
@@ -25,8 +25,7 @@ print("{:50} | {:10.2f}".format(producto1, precio1))
 print("{:50} | {:10.2f}".format(producto2, precio2))
 print("{:50} | {:10.2f}".format(producto3, precio3))
 print("{:50} | {:10.2f}".format(
-    producto4 + " (Descuento incluido)", precio4 - (13 / 100 * precio4)))
+    producto4 + " (Descuento incluido)", precio4 - (descuento4 / 100 * precio4)))
 print("{:50} | {:10.2f}".format(producto5, precio5))
 print("-" * 65)
-
 
