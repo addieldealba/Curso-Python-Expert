@@ -7,3 +7,4 @@ Los scripts o programas están organizados por clase para poder hacer referencia
 cada clase se muestran los temás a cubrir y los script a relaizar.
 
 - [Clase 01](Clase-01)
+- [Clase 02](Clase-02)
