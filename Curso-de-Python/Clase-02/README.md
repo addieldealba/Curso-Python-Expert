@@ -2,6 +2,16 @@
 ## Clase 02
 ### Temas
 
-- Instalación
-  - **hola-mundo.py** Se muestra como crear y ejecutar un programa / script en Python, al mismo tiempo que se
-        valida que la instalación funcione correctamente.
+- Estructuras de datos
+  - Listas
+  - Tuplas
+  - Conjuntos
+  - Diccionarios
+- Programación modular
+  - Funciones
+  - Funciones Lambda
+  - Listas de comprensión
+- Módulos y paquetes
+  - Librería estándar de Python y su uso
+  - Construcción de Módulos
+  - Construcción de Paquetes
