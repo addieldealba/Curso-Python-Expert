@@ -51,3 +51,28 @@ def guarda_producto(producto, nomarch):
         producto.nombre, nomarch))
 
 
+def guarda_nota_csv(lista, subtotal, iva, nomarch):
+    """
+    Guarda la nota en el archivo nomarch en formato CSV incluyendo el
+    desgloce de iva y total.
+    """
+    with open(nomarch, "w") as fcsv:
+        csv_writer = csv.writer(fcsv)
+
+        # Se escribe el encabezado de las columnas
+        encabezados = ["Nombre", "Cantidad", "Precio", "Subtotal"]
+        csv_writer.writerow(encabezados)
+
+        # Se escriben los productos
+        for producto in lista:
+            csv_writer.writerow(producto.row)
+
+        # Se escribe el subtotal y desglose de iva
+        rsubtotal = [None, None, "Subtotal:", subtotal]
+        riva = [None, None, "IVA:", iva]
+        rtotal = [None, None, "Total:", subtotal+iva]
+        csv_writer.writerow(rsubtotal)
+        csv_writer.writerow(riva)
+        csv_writer.writerow(rtotal)
+    print("Se ha creado la nota de venta en el archivo nota.csv!")
+

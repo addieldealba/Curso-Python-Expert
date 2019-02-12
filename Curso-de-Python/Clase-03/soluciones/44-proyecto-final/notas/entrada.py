@@ -12,6 +12,8 @@ una entrada de datos.
 
 from notas.producto import Producto
 
+import csv
+
 def leesino(msg):
     """
     Se lee la respuesta del usuario para elegir si quiere o no iva
@@ -100,4 +102,18 @@ def lee_producto():
     return Producto(nombre, cantidad, precio)
 
 
+def obtiene_productos_csv(nomarch):
+    """
+    Regresa la lista de productos donde cada elemento es de tipo Producto
+    leídos desde el archivo nomarch
+    """
+    productos = []
+    with open(nomarch) as fcsv:
+        csv_reader = csv.reader(fcsv)
+        for fila in csv_reader:
+            producto = Producto(fila[0], int(fila[1]), float(fila[2]))
+            productos.append(producto)
+    print("Se han leído {} productos de {}!".format(len(productos),
+        nomarch))
 
+    return productos
