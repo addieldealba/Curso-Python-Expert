@@ -5,33 +5,11 @@
 Agrega un producto al archivo productos.csv proporcionado por el usuario
 """
 
-from notas.entrada import lee_entero, lee_decimal
-from notas.producto import Producto
-
-import csv
+from notas.entrada import lee_producto
+from notas.salida import guarda_producto
 
 # Variables o constantes globales
 NA_PRODUCTOS = "productos.csv"  # Nombre del archivo de productos
-
-def lee_producto():
-    """
-    Lee un producto desde la entrada estándar y regresa un objeto
-    de tipo Producto
-    """
-    nombre = input("Nombre del producto: ")
-    cantidad = lee_entero("Cantidad [1]:", 1)
-    precio = lee_decimal("Precio:")
-
-    return Producto(nombre, cantidad, precio)
-
-
-def guarda_producto(producto, nomarch):
-    """ Agrega el producto al archivo nomarch en formato CSV """
-    with open(nomarch, "a") as fcsv:
-        csv_writer = csv.writer(fcsv)
-        csv_writer.writerow(producto.row)
-    print("El producto {} ha sido guardado en {}!".format(
-        producto.nombre, nomarch))
 
 
 def main():

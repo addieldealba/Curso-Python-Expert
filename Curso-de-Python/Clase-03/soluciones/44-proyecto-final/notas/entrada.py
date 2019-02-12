@@ -10,6 +10,8 @@ una entrada de datos.
 
 """
 
+from notas.producto import Producto
+
 def leesino(msg):
     """
     Se lee la respuesta del usuario para elegir si quiere o no iva
@@ -84,5 +86,18 @@ def lee_decimal(msg, valor=None):
             print()
             print("Error: lo que has escrito no es un decimal, intenta de nuevo!")
             print()
+
+
+def lee_producto():
+    """
+    Lee un producto desde la entrada estándar y regresa un objeto
+    de tipo Producto
+    """
+    nombre = input("Nombre del producto: ")
+    cantidad = lee_entero("Cantidad [1]:", 1)
+    precio = lee_decimal("Precio:")
+
+    return Producto(nombre, cantidad, precio)
+
 
 

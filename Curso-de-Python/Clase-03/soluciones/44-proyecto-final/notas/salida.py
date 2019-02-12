@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-
 MÓDULO salida
 Contiene funciones cuya función tienen que ver con la impresión de
 resultados.
-
 """
+
+import csv
 
 def imprime(productos, total, con_iva):
     """ Imprime la lista de productos en forma de tabla """
@@ -40,4 +40,14 @@ def imprime(productos, total, con_iva):
         print("{:>67} | {:9.2f}".format("IVA", iva))
         print("{:>67} | {:9.2f}".format("Total", total))
         print("-" * 80)
+
+
+def guarda_producto(producto, nomarch):
+    """ Agrega el producto al archivo nomarch en formato CSV """
+    with open(nomarch, "a") as fcsv:
+        csv_writer = csv.writer(fcsv)
+        csv_writer.writerow(producto.row)
+    print("El producto {} ha sido guardado en {}!".format(
+        producto.nombre, nomarch))
+
 
