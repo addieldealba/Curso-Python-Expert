@@ -38,6 +38,14 @@ class Archivo:
         return [self.nombre, self.tamanio,
             self.fecha.strftime("%b %d %Y %H:%M")]
 
+    def html_tr(self):
+        """
+        Regresa una lista de los atributos en formato html haciendo uso
+        de la etiqueta <tr>
+        """
+        return "<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(
+            self.nombre, self.tamanio, self.fecha)
+
 # Imprime una línea horizontal de longitud l
 linea = lambda l: print("-" * l)
 
@@ -66,7 +74,7 @@ def obtiene_archivos(d):
 imprime = lambda archivos: print("\n".join(["{:40} {:10} {:20}".format(*a.row)
     for a in archivos]))
 
-def guardar_archivos(lista, agregar=False):
+def guardar_archivos(lista, agregar=False, archivo="archivos.csv"):
     """
     Guarda la lista en archivos.csv donde cada elemento debe contar
     una representación en str.
@@ -78,13 +86,49 @@ def guardar_archivos(lista, agregar=False):
     else:
         modo = "w"
 
-    with open("archivos.csv", modo) as fcsv:
+    with open(archivo, modo) as fcsv:
         # Se crea un escritor de tipo csv
         csv_writer = csv.writer(fcsv)
         # Guarda cada archivo
         for archivo in lista:
             csv_writer.writerow(archivo.row)
 
+
+# Imprime la lista de archivo en formato HTML
+html = """
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="main.css">
+<head>
+<body>
+  <h2>Lista de archivos de la carpeta {carpeta}</h2>
+  <hr />
+  <table>
+    <tr><th>Nombre</th><th>Tamaño</th><th>Fecha</th></tr>
+    {filas}
+  </table>
+</body>
+</html>
+"""
+def crea_html(archivos, directorio):
+    """ Crea la lista en formato HTML """
+    filas = [a.html_tr() for a in archivos]
+    datos = {
+        "carpeta":directorio,
+        "filas":"\n".join(filas)
+    }
+    return html.format(**datos)
+    
+
+def guardar(documento, nomarch):
+    """
+    Guarda el documento en nomarch donde documento está en str
+    """
+    # Se define el ancho máximo de cada línea en el archivo
+    with open(nomarch, "w") as farch:
+        farch.write(documento)
 
 def main():
     """ Función principal que se ejecuta cuando es usado como script """
