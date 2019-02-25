@@ -76,7 +76,7 @@ def obtiene_archivos(d):
     return archivos
 
 # Imprime la lista de archivo en forma de tabla
-imprime = lambda archivos: print("\n".join(["{:40} {:10} {:20}".format(*a.row)
+imprime = lambda archivos: print("\n".join(["{:40.40} {:10} {:20}".format(*a.row)
     for a in archivos]))
 
 def guardar_archivos(lista, agregar=False, archivo="archivos.csv"):
