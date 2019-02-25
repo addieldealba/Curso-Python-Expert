@@ -12,6 +12,7 @@ archivos del sistema operativo.
 
 import csv
 import datetime
+import json
 import os
 
 
@@ -37,6 +38,16 @@ class Archivo:
         """
         return [self.nombre, self.tamanio,
             self.fecha.strftime("%b %d %Y %H:%M")]
+
+    def dict(self):
+        """
+        Regresa un diccionario de los atributos
+        """
+        return {
+            "nombre":self.nombre,
+            "tamanio":self.tamanio,
+            "fecha":self.fecha.strftime("%b %d %Y %H:%M")
+        }
 
     def html_tr(self):
         """
@@ -120,6 +131,12 @@ def crea_html(archivos, directorio):
         "filas":"\n".join(filas)
     }
     return html.format(**datos)
+    
+
+def crea_json(archivos):
+    """ Crea la lista en formato JSON """
+    filas = [a.dict() for a in archivos]
+    return json.dumps(filas, indent=4)
     
 
 def guardar(documento, nomarch):
