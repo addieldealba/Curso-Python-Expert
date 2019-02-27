@@ -18,10 +18,11 @@ import os
 
 class Archivo:
     """ Se define la clase para el objeto Archivo """
-    def __init__(self, nombre, tamanio, fecha):
+    def __init__(self, nombre, tamanio, fecha, es_dir=None):
         """
         Contructor de la clase con los atributos nombre del archivo,
-        tamanio en bytes y fecha en timestamp o en datetime.
+        tamanio en bytes, fecha en timestamp o en datetime y una bandera
+        que indica si es directorio o no.
         """
         self.nombre = nombre
         self.tamanio = tamanio
@@ -29,6 +30,7 @@ class Archivo:
             self.fecha = datetime.datetime.fromtimestamp(fecha)
         else:
             self.fecha = fecha
+        self.es_dir = es_dir
 
     @property
     def row(self):
@@ -36,18 +38,25 @@ class Archivo:
         Regresa una lista de los atributos a incluir en una línea de
         un archivo csv
         """
-        return [self.nombre, self.tamanio,
+        lista = [self.nombre, self.tamanio,
             self.fecha.strftime("%b %d %Y %H:%M")]
+        lista += [self.es_dir] if self.es_dir != None else []
+
+        return lista
 
     def dict(self):
         """
         Regresa un diccionario de los atributos
         """
-        return {
+        darch = {
             "nombre":self.nombre,
             "tamanio":self.tamanio,
             "fecha":self.fecha.strftime("%b %d %Y %H:%M")
-        }
+            }
+        if self.es_dir != None:
+            darch["es_dir"] = self.es_dir
+
+        return darch
 
     def html_tr(self):
         """
@@ -71,8 +80,12 @@ def obtiene_archivos(d):
     # Se obtiene el tamaño en bytes y la fecha de modificación usando
     # el módulo os.path y se crea un objeto Archivo
     archivos = [
-        Archivo(a, os.path.getsize(os.path.join(d,a)),
-            os.path.getmtime(os.path.join(d,a)))
+        Archivo(
+            a,
+            os.path.getsize(os.path.join(d,a)),
+            os.path.getmtime(os.path.join(d,a)),
+            os.path.isdir(os.path.join(d,a))
+        )
         for a in archivos
     ]
 
