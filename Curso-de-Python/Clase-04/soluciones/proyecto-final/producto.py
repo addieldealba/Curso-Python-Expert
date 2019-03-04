@@ -23,6 +23,11 @@ class Producto:
         self.precio = precio
         self.imagen = imagen
 
+    @property
+    def precio_str(self):
+        """ Regresa el precio en formato moneda """
+        return "{:.2f}".format(self.precio)
+
     def list(self):
         """
         Regresa un Producto como una lista con todos los atributos
