@@ -13,10 +13,20 @@ GET /productos  Muestra la lista de productos en formato HTML en forma
                 tabular incluyendo nombre, cantidad, precio e imagen.
 GET /productos/id
                 Muestra el detalle del producto con id en formato HTML
+
+Métodos JSON
+
+GET /api/productos
+                Regresa un documento json con la lista de productos.
+GET /api/productos/id
+                Regresa un documento json con el detalle del producto con
+                id.
 """
 
-from bottle import route, run, template, response, view, static_file
-from producto import Producto, obtiene_productos_csv 
+from bottle import route, run, template, response, view, static_file, abort
+from producto import Producto, obtiene_productos_csv
+
+import json
 
 # Nombre del archivo csv
 NOMCSV = "productos.csv"
@@ -64,23 +74,25 @@ def productos_detalle(id):
             producto = lista[0]
         except IndexError:
             # Si el id no existe no tenemos producto
-            producto = None
+            abort(404, "Producto no encontrado")
     except ValueError:
         # Si el id no es entero no tenemos producto
-        producto = None
+        abort(405, "El id de producto no es válido")
 
     return dict(producto=producto)
 
 
+# Se define la ruta relacionada con la url http://localhost/api/productos
+@route("/api/productos")
 def productos_json():
     """
     Regresa la lista de productos en formato json.
     """
     # Se obtiene la lista de productos 
-    lista = entrada.obtiene_productos_csv(NOMCSV)
+    lista = obtiene_productos_csv(NOMCSV)
 
     # Se crea un documento en formato json
-    doc_json = salida.genera_json(lista)
+    doc_json = json.dumps([p.dict() for p in lista], indent=4)
 
     # Se define el tipo de contenido
     response.content_type = "application/json"
@@ -88,9 +100,10 @@ def productos_json():
     return doc_json
 
 
-# Se define la ruta relacionada con la url http://localhost/producto/id
-@route("/producto/<id>")
-def detalle_producto(id):
+# Se define la ruta relacionada con la url
+# http://localhost/api/productos/id
+@route("/api/productos/<id>")
+def productos_detalle_json(id):
     """
     Regresa el detalle de un producto en formato json.
     """
@@ -98,16 +111,27 @@ def detalle_producto(id):
         # Se convierte id a entero
         id = int(id)
         # Se obtiene la lista de productos 
-        lista = entrada.obtiene_productos_csv(NOMCSV)
+        lista = obtiene_productos_csv(NOMCSV)
+        # Se busca el producto con id
+        lista = [p for p in lista if p.id == id]
+        try:
+            producto = lista[0]
+            # Se crea un documento en formato json
+            doc_json = json.dumps([producto.dict()], indent=4) 
+        except IndexError:
+            # Si el id no existe no tenemos producto
+            doc_json = json.dumps([{
+                "codigo":1,
+                "descripcion": "Producto no encontrado"
+            }], indent=4)
     except ValueError:
-        # Si el id no es entero la lista de productos es vacía
-        lista = []
+        # Si el id no es entero no tenemos producto y se avisa al
+        # usuario
+        doc_json = json.dumps([{
+            "codigo":2,
+            "descripcion": "El id de producto no es válido"
+        }], indent=4, ensure_ascii=False)
 
-    # Se busca el producto con id
-    lista = [p for p in lista if p.id == id]
-
-    # Se crea un documento en formato json
-    doc_json = salida.genera_json(lista)
 
     # Se define el tipo de contenido
     response.content_type = "application/json"
