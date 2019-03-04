@@ -142,6 +142,6 @@ def productos_detalle_json(id):
 # Se carga e inicia el servidor en locahlost en el puerto 8080 y además
 # cuando se realiza una modificación en el código en automático reinicia
 # el servidor.
-run(host="localhost", port=8080, reloader=True)
+run(host="0.0.0.0", port=8080, reloader=True)
 
 
