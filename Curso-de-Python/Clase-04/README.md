@@ -1,5 +1,5 @@
 # Curso de Python
-## Clase 0$
+## Clase 04
 ### Temas
 
 - Errores y excepciones
