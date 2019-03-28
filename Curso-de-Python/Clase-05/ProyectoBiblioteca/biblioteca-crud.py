@@ -63,5 +63,28 @@ def r_autor():
         # Se fusionan los campos en una cadena y se imprimen
         print(" | ".join(fila))
 
+@crud.command()
+@click.argument("idautor")
+@click.argument("campo")
+@click.argument("valor")
+def u_autor(idautor, campo, valor):
+    """ Actualiza los datos de un Autor """
+    # Se realiza la conexión a la base de datos
+    conn = sqlite3.connect(BD)
+    # Se obtiene un cursor o indice a la base de datos
+    cur = conn.cursor()
+    # Se crea la consulta SQL
+    sql = "update Autor set {}=? where idAutor=?".format(campo)
+    # Se crea la tupla de valores
+    valores = (valor, idautor)
+    # Se ejecuta la consulta SQL agregando los valores de forma segura
+    cur.execute(sql, valores)
+    # Se ejecuta un commit para indicar a la BD que la inserción se ejecute como
+    # una operación atómica.
+    conn.commit()
+    # Se muestra un mensaje al usuario
+    print("Se ha actualizado el registro {} en la tabla Autor".format(idautor))
+
+
 if __name__ == '__main__':
     crud()
