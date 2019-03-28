@@ -16,23 +16,27 @@ def crud():
 @click.argument("ap-materno", required=False)
 def c_autor(nombre, ap_paterno, ap_materno):
     """ Inserta un registro en la tabla Autor """
-    # Se arma una tupla con los campos
-    campos = (nombre, ap_paterno, ap_materno)
-    # Se realiza la conexión a la base de datos
-    conn = sqlite3.connect(BD)
-    # Se obtiene un cursor o indice a la base de datos
-    cur = conn.cursor()
-    # Se ejecuta la consulta SQL colocando un símbolo ? para cada valor de cada
-    # campo para evitar inyección SQL. Es la recomendación que hace el módulo
-    # sqlite3.
-    cur.execute("insert into Autor values (null, ?, ?, ?)", campos)
-    # Se ejecuta un commit para indicar que la inserción se ejecute como una
-    # operación atómica.
-    conn.commit()
-    # Se cierra la base de datos
-    conn.close()
+    tabla = "Autor"
+    # Se realiza la conexión a la base de datos y se mantiene abierta
+    with sqlite3.connect(BD) as conn:
+        # Se obtiene un cursor o indice a la base de datos
+        cur = conn.cursor()
+        # Se arma una tupla con los valores de los campos
+        valores = (nombre, ap_paterno, ap_materno)
+        # Se crea una cadena con tantos signos de interrogación como valores
+        # tengamos separados por comas
+        signos = ", ".join(["?"] * len(valores))
+        # Se crea la consulta en SQL
+        sql = "insert into {} values (null, {})".format(tabla, signos)
+        # Se ejecuta la consulta
+        cur.execute(sql, valores)
+        # Se ejecuta un commit para indicar que la inserción se ejecute como una
+        # operación atómica.
+        conn.commit()
+
     # Se muestra un mensaje al usuario
-    print("Se ha insertado el registro {} en la tabla Autor".format(campos))
+    print("Se ha insertado el registro {} en la tabla {}".format(
+        valores, tabla))
 
 def obtiene_registros(tabla):
     """
