@@ -42,43 +42,42 @@ def r_cliente():
 
 
 @crud.command()
-@click.argument("nombre")
-@click.argument("ap-paterno")
-@click.argument("ap-materno", required=False)
-def c_autor(nombre, ap_paterno, ap_materno):
-    """ Inserta un registro en la tabla Autor """
-    # Se arma una tupla con los campos
-    campos = (nombre, ap_paterno, ap_materno)
-    # Se realiza la conexión a la base de datos
-    conn = sqlite3.connect(BD)
-    # Se obtiene un cursor o indice a la base de datos
-    cur = conn.cursor()
-    # Se ejecuta la consulta SQL colocando un símbolo ? para cada valor de cada
-    # campo para evitar inyección SQL. Es la recomendación que hace el módulo
-    # sqlite3.
-    cur.execute("insert into Autor values (null, ?, ?, ?)", campos)
-    # Se ejecuta un commit para indicar que la inserción se ejecute como una
-    # operación atómica.
-    conn.commit()
-    # Se cierra la base de datos
-    conn.close()
+@click.argument("razon-social")
+@click.argument("rfc")
+def c_cliente(razon_social, rfc):
+    """ Inserta un registro en la tabla Cliente """
+    # Se realiza la conexión a la base de datos y se mantiene abierta hasta
+    # terminar
+    with sqlite3.connect(BD) as conn:
+        # Se obtiene un cursor o indice a la base de datos
+        cur = conn.cursor()
+        # Se arma la consulta SQL
+        sql = "insert into Cliente values (null, ?, ?)"
+        # Se arma una tupla de valores con los campos
+        valores = (razon_social, rfc)
+        # Se ejecuta la consulta
+        cur.execute(sql, valores)
+        # Se ejecuta un commit para indicar que la inserción se ejecute como una
+        # operación atómica.
+        conn.commit()
+
     # Se muestra un mensaje al usuario
-    print("Se ha insertado el registro {} en la tabla Autor".format(campos))
+    print("Se ha insertado el registro {} en la tabla Cliente".format(valores))
 
 @crud.command()
-@click.argument("idautor")
+@click.argument("idcliente")
 @click.argument("campo")
 @click.argument("valor")
-def u_autor(idautor, campo, valor):
-    """ Actualiza los datos de un Autor """
+def u_cliente(idcliente, campo, valor):
+    """ Actualiza los datos de un Cliente """
     # Se realiza la conexión a la base de datos
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
         cur = conn.cursor()
         # Se crea la consulta SQL
-        sql = "update Autor set {}=? where idAutor=?".format(campo)
+        sql = "update Cliente set {}=? where idCliente=?".format(campo)
         # Se crea la tupla de valores
-        valores = (valor, idautor)
+        valores = (valor, idcliente)
         # Se ejecuta la consulta SQL agregando los valores de forma segura
         cur.execute(sql, valores)
         # Se ejecuta un commit para indicar a la BD que la actualización se
@@ -86,21 +85,21 @@ def u_autor(idautor, campo, valor):
         conn.commit()
 
     # Se muestra un mensaje al usuario
-    print("Se ha actualizado el registro {} en la tabla Autor".format(idautor))
+    print("Se ha actualizado el registro {} en la tabla Cliente".format(idcliente))
 
 
 @crud.command()
-@click.argument("idautor")
-def d_autor(idautor):
-    """ Elimina un registro de un Autor """
+@click.argument("idcliente")
+def d_cliente(idcliente):
+    """ Elimina un registro de un Cliente """
     # Se realiza la conexión a la base de datos
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
         cur = conn.cursor()
         # Se crea la consulta SQL
-        sql = "delete from Autor where idAutor=?"
+        sql = "delete from Cliente where idCliente=?"
         # Se crea la tupla de valores
-        valores = (idautor,)
+        valores = (idcliente,)
         # Se ejecuta la consulta SQL agregando los valores de forma segura
         cur.execute(sql, valores)
         # Se ejecuta un commit para indicar a la BD que la aliminación se
@@ -108,7 +107,7 @@ def d_autor(idautor):
         conn.commit()
 
     # Se muestra un mensaje al usuario
-    print("Se ha eliminado el registro {} en la tabla Autor".format(idautor))
+    print("Se ha eliminado el registro {} en la tabla Cliente".format(idcliente))
 
 
 if __name__ == '__main__':
