@@ -86,19 +86,20 @@ def r_autor():
 
 
 @crud.command()
-@click.argument("idautor")
+@click.argument("id")
 @click.argument("campo")
 @click.argument("valor")
-def u_autor(idautor, campo, valor):
+def u_autor(id, campo, valor):
     """ Actualiza los datos de un Autor """
+    tabla = "Autor"
     # Se realiza la conexión a la base de datos
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
         cur = conn.cursor()
         # Se crea la consulta SQL
-        sql = "update Autor set {}=? where idAutor=?".format(campo)
+        sql = "update {} set {}=? where id{}=?".format(tabla, campo, tabla)
         # Se crea la tupla de valores
-        valores = (valor, idautor)
+        valores = (valor, id)
         # Se ejecuta la consulta SQL agregando los valores de forma segura
         cur.execute(sql, valores)
         # Se ejecuta un commit para indicar a la BD que la actualización se
@@ -106,21 +107,22 @@ def u_autor(idautor, campo, valor):
         conn.commit()
 
     # Se muestra un mensaje al usuario
-    print("Se ha actualizado el registro {} en la tabla Autor".format(idautor))
+    print("Se ha actualizado el registro {} en la tabla {}".format(id, tabla))
 
 
 @crud.command()
-@click.argument("idautor")
-def d_autor(idautor):
+@click.argument("id")
+def d_autor(id):
     """ Elimina un registro de un Autor """
+    tabla = "Autor"
     # Se realiza la conexión a la base de datos
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
         cur = conn.cursor()
         # Se crea la consulta SQL
-        sql = "delete from Autor where idAutor=?"
+        sql = "delete from {} where id{}=?".format(tabla, tabla)
         # Se crea la tupla de valores
-        valores = (idautor,)
+        valores = (id,)
         # Se ejecuta la consulta SQL agregando los valores de forma segura
         cur.execute(sql, valores)
         # Se ejecuta un commit para indicar a la BD que la aliminación se
@@ -128,7 +130,7 @@ def d_autor(idautor):
         conn.commit()
 
     # Se muestra un mensaje al usuario
-    print("Se ha eliminado el registro {} en la tabla Autor".format(idautor))
+    print("Se ha eliminado el registro {} en la tabla {}".format(id, tabla))
 
 
 if __name__ == '__main__':
