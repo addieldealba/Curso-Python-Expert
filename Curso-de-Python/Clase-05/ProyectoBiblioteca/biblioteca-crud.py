@@ -26,6 +26,48 @@ def c_autor(nombre, ap_paterno, ap_materno):
     print("Se ha insertado el registro {} en la tabla {}".format(
         valores, tabla))
 
+@crud.command()
+@click.argument("codigo")
+@click.argument("genero", type=click.Choice(["Mujer", "Hombre"]))
+@click.argument("nombre")
+@click.argument("ap-paterno")
+@click.argument("ap-materno", required=False)
+def c_usuario(codigo, nombre, ap_paterno, ap_materno, genero):
+    """
+    Inserta un registro en la tabla Usuario, si no se cuenta con el CODIGO de
+    usuario usar el código generico 000000.
+    """
+    # Variables que definen que insertar y en que tabla se insertan
+    tabla = "Usuario"
+    valores = (codigo, nombre, ap_paterno, ap_materno, genero)
+    # Se realiza la inserción del registro
+    inserta_registro(tabla, valores)
+
+    # Se muestra un mensaje al usuario
+    print("Se ha insertado el registro {} en la tabla {}".format(
+        valores, tabla))
+
+@crud.command()
+@click.argument("codigo")
+@click.argument("titulo")
+@click.argument("isbn")
+@click.argument("numpags", type=int)
+@click.argument("editorial")
+@click.argument("idautor", type=int)
+def c_libro(codigo, titulo, isbn, numpags, editorial, idautor):
+    """
+    Inserta un registro en la tabla Libro
+    """
+    # Variables que definen que insertar y en que tabla se insertan
+    tabla = "Libro"
+    valores = (codigo, titulo, isbn, numpags, editorial, idautor)
+    # Se realiza la inserción del registro
+    inserta_registro(tabla, valores)
+
+    # Se muestra un mensaje al usuario
+    print("Se ha insertado el registro {} en la tabla {}".format(
+        valores, tabla))
+
 def imprime_texto(registros):
     """ Imprime la lista de registros en la salida estándar en formato texto """
     # Se obtiene el ancho máximo de cada columna
@@ -44,21 +86,22 @@ def imprime_texto(registros):
         print(" | ".join(fila))
 
 @crud.command()
-def r_autor():
-    """ Imprime la lista de registros de la tabla Autor """
-    # Se obtiene la lista de registros de la tabla Autor
-    registros = obtiene_registros("Autor")
+@click.argument("tabla")
+def read(tabla):
+    """ Imprime la lista de registros de TABLA """
+    # Se obtiene la lista de registros de tabla
+    registros = obtiene_registros(tabla)
     # Se imprimen los registros en formato texto en la salida estándar
     imprime_texto(registros)
 
 @crud.command()
+@click.argument("tabla")
 @click.argument("id")
 @click.argument("campo")
 @click.argument("valor")
-def u_autor(id, campo, valor):
-    """ Actualiza los datos de un Autor """
+def update(tabla, id, campo, valor):
+    """ Actualiza los datos de CAMPO en TABLA con VALOR en el registro ID """
     # Variables necesarias para actualizar un campo en un registro
-    tabla = "Autor"
     valores = (valor, id)
     actualiza_registro(tabla, campo, valores)
 
@@ -66,11 +109,11 @@ def u_autor(id, campo, valor):
     print("Se ha actualizado el registro {} en la tabla {}".format(id, tabla))
 
 @crud.command()
+@click.argument("tabla")
 @click.argument("id")
-def d_autor(id):
-    """ Elimina un registro de un Autor """
+def delete(tabla, id):
+    """ Elimina un registro ID de TABLA """
     # Variables necesarias para eliminar un campo en un registro
-    tabla = "Autor"
     valores = (id,)
     elimina_registro(tabla, valores)
 
