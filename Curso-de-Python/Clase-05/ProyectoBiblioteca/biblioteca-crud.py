@@ -2,32 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import click
-import sqlite3
+from modelosqlite3 import *
 
 BD = "biblioteca.sqlite3"
 
 @click.group()
 def crud():
-    pass
-
-
-def inserta_registro(tabla, valores):
-    """ Inserta un registro en tabla """
-    with sqlite3.connect(BD) as conn:
-        # Se obtiene un cursor o indice a la base de datos
-        cur = conn.cursor()
-        # Se arma una tupla con los valores de los campos
-        # Se crea una cadena con tantos signos de interrogación como valores
-        # tengamos separados por comas
-        signos = ", ".join(["?"] * len(valores))
-        # Se crea la consulta en SQL
-        sql = "insert into {} values (null, {})".format(tabla, signos)
-        # Se ejecuta la consulta
-        cur.execute(sql, valores)
-        # Se ejecuta un commit para indicar que la inserción se ejecute como una
-        # operación atómica.
-        conn.commit()
-
+    parametros_bd(BD)
 
 @crud.command()
 @click.argument("nombre")
@@ -44,26 +25,6 @@ def c_autor(nombre, ap_paterno, ap_materno):
     # Se muestra un mensaje al usuario
     print("Se ha insertado el registro {} en la tabla {}".format(
         valores, tabla))
-
-def obtiene_registros(tabla):
-    """
-    Obtiene la lista de registros de tabla y los regresa en forma de lista
-    """
-    # Se realiza la conexión a la base de datos y with la cierra en automático
-    with sqlite3.connect(BD) as conn:
-        # Se obtiene un cursor o indice a la base de datos
-        cur = conn.cursor()
-        # Se crea la consulta SQL
-        sql = "select * from {}".format(tabla)
-        # Se ejecuta la consulta
-        cur.execute(sql)
-        # Se obtiene la lista de campos y se agrega como primer posición en la
-        # lista de resultados.
-        registros = [[r[0] for r in cur.description]]
-        # Se obtiene la lista de resultados de la consulta SQL
-        registros += cur.fetchall()
-
-    return registros
 
 def imprime_texto(registros):
     """ Imprime la lista de registros en la salida estándar en formato texto """
@@ -82,7 +43,6 @@ def imprime_texto(registros):
         # Se fusionan los campos en una cadena y se imprimen
         print(" | ".join(fila))
 
-
 @crud.command()
 def r_autor():
     """ Imprime la lista de registros de la tabla Autor """
@@ -90,23 +50,6 @@ def r_autor():
     registros = obtiene_registros("Autor")
     # Se imprimen los registros en formato texto en la salida estándar
     imprime_texto(registros)
-
-
-def actualiza_registro(tabla, campo, valores):
-    """ Actualiza un registro en tabla """
-    # Se realiza la conexión a la base de datos
-    with sqlite3.connect(BD) as conn:
-        # Se obtiene un cursor o indice a la base de datos
-        cur = conn.cursor()
-        # Se crea la consulta SQL
-        sql = "update {} set {}=? where id{}=?".format(tabla, campo, tabla)
-        # Se crea la tupla de valores
-        # Se ejecuta la consulta SQL agregando los valores de forma segura
-        cur.execute(sql, valores)
-        # Se ejecuta un commit para indicar a la BD que la actualización se
-        # ejecute como una operación atómica.
-        conn.commit()
-
 
 @crud.command()
 @click.argument("id")
@@ -121,23 +64,6 @@ def u_autor(id, campo, valor):
 
     # Se muestra un mensaje al usuario
     print("Se ha actualizado el registro {} en la tabla {}".format(id, tabla))
-
-
-def elimina_registro(tabla, valores):
-    """ Elimina un registro en tabla """
-    # Se realiza la conexión a la base de datos
-    with sqlite3.connect(BD) as conn:
-        # Se obtiene un cursor o indice a la base de datos
-        cur = conn.cursor()
-        # Se crea la consulta SQL
-        sql = "delete from {} where id{}=?".format(tabla, tabla)
-        # Se crea la tupla de valores
-        # Se ejecuta la consulta SQL agregando los valores de forma segura
-        cur.execute(sql, valores)
-        # Se ejecuta un commit para indicar a la BD que la aliminación se
-        # ejecute como una operación atómica.
-        conn.commit()
-
 
 @crud.command()
 @click.argument("id")
