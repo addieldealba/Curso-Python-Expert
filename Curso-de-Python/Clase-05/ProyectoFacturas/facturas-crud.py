@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import click
+import datetime
 from modelosqlite3 import *
 
 BD = "facturas.sqlite3"
@@ -18,6 +19,41 @@ def c_cliente(razon_social, rfc):
     # Variables que definen que insertar y en que tabla se insertan
     tabla = "Cliente"
     valores = (razon_social, rfc)
+    # Se realiza la inserción del registro
+    inserta_registro(tabla, valores)
+
+    # Se muestra un mensaje al usuario
+    print("Se ha insertado el registro {} en la tabla {}".format(
+        valores, tabla))
+
+@crud.command()
+@click.argument("nombre")
+@click.argument("precio", type=float)
+@click.argument("cantidad", type=int)
+def c_producto(nombre, precio, cantidad):
+    """ Inserta un registro en la tabla Producto """
+    # Variables que definen que insertar y en que tabla se insertan
+    tabla = "Producto"
+    valores = (nombre, precio, cantidad)
+    # Se realiza la inserción del registro
+    inserta_registro(tabla, valores)
+
+    # Se muestra un mensaje al usuario
+    print("Se ha insertado el registro {} en la tabla {}".format(
+        valores, tabla))
+
+@crud.command()
+@click.argument("lugar")
+@click.argument("rfcemisor")
+@click.argument("idcliente", type=int)
+@click.argument("idproducto", type=int)
+def c_factura(lugar, rfcemisor, idcliente, idproducto):
+    """ Inserta un registro en la tabla Factura """
+    # Variables que definen que insertar y en que tabla se insertan
+    tabla = "Factura"
+    fecha = datetime.datetime.today()  # Fecha de hoy en type datetime
+    fecha = fecha.isoformat()  # Fecha de hoy en tipo str en formato iso
+    valores = (fecha, lugar, rfcemisor, idcliente, idproducto)
     # Se realiza la inserción del registro
     inserta_registro(tabla, valores)
 
@@ -43,21 +79,22 @@ def imprime_texto(registros):
         print(" | ".join(fila))
 
 @crud.command()
-def r_cliente():
-    """ Imprime la lista de registros de la tabla Cliente """
-    # Se obtiene la lista de registros de la tabla Autor
-    registros = obtiene_registros("Cliente")
+@click.argument("tabla")
+def read(tabla):
+    """ Imprime la lista de registros de TABLA """
+    # Se obtiene la lista de registros de tabla
+    registros = obtiene_registros(tabla)
     # Se imprimen los registros en formato texto en la salida estándar
     imprime_texto(registros)
 
 @crud.command()
+@click.argument("tabla")
 @click.argument("id")
 @click.argument("campo")
 @click.argument("valor")
-def u_cliente(id, campo, valor):
-    """ Actualiza los datos de un Cliente """
+def update(tabla, id, campo, valor):
+    """ Actualiza los datos de CAMPO en TABLA con VALOR en el registro ID """
     # Variables necesarias para actualizar un campo en un registro
-    tabla = "Cliente"
     valores = (valor, id)
     actualiza_registro(tabla, campo, valores)
 
@@ -65,11 +102,11 @@ def u_cliente(id, campo, valor):
     print("Se ha actualizado el registro {} en la tabla {}".format(id, tabla))
 
 @crud.command()
+@click.argument("tabla")
 @click.argument("id")
-def d_cliente(id):
-    """ Elimina un registro de un Cliente """
+def delete(tabla, id):
+    """ Elimina un registro ID de TABLA """
     # Variables necesarias para eliminar un campo en un registro
-    tabla = "Cliente"
     valores = (id,)
     elimina_registro(tabla, valores)
 
