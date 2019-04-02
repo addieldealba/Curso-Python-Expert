@@ -10,19 +10,13 @@ BD = "biblioteca.sqlite3"
 def crud():
     pass
 
-@crud.command()
-@click.argument("nombre")
-@click.argument("ap-paterno")
-@click.argument("ap-materno", required=False)
-def c_autor(nombre, ap_paterno, ap_materno):
-    """ Inserta un registro en la tabla Autor """
-    tabla = "Autor"
-    # Se realiza la conexión a la base de datos y se mantiene abierta
+
+def inserta_registro(tabla, valores):
+    """ Inserta un registros en tabla """
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
         cur = conn.cursor()
         # Se arma una tupla con los valores de los campos
-        valores = (nombre, ap_paterno, ap_materno)
         # Se crea una cadena con tantos signos de interrogación como valores
         # tengamos separados por comas
         signos = ", ".join(["?"] * len(valores))
@@ -33,6 +27,19 @@ def c_autor(nombre, ap_paterno, ap_materno):
         # Se ejecuta un commit para indicar que la inserción se ejecute como una
         # operación atómica.
         conn.commit()
+
+
+@crud.command()
+@click.argument("nombre")
+@click.argument("ap-paterno")
+@click.argument("ap-materno", required=False)
+def c_autor(nombre, ap_paterno, ap_materno):
+    """ Inserta un registro en la tabla Autor """
+    # Variables que definen que insertar y en que tabla se insertan
+    tabla = "Autor"
+    valores = (nombre, ap_paterno, ap_materno)
+    # Se realiza la inserción del registro
+    inserta_registro(tabla, valores)
 
     # Se muestra un mensaje al usuario
     print("Se ha insertado el registro {} en la tabla {}".format(
