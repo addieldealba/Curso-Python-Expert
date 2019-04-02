@@ -12,7 +12,7 @@ def crud():
 
 
 def inserta_registro(tabla, valores):
-    """ Inserta un registros en tabla """
+    """ Inserta un registro en tabla """
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
         cur = conn.cursor()
@@ -92,13 +92,8 @@ def r_autor():
     imprime_texto(registros)
 
 
-@crud.command()
-@click.argument("id")
-@click.argument("campo")
-@click.argument("valor")
-def u_autor(id, campo, valor):
-    """ Actualiza los datos de un Autor """
-    tabla = "Autor"
+def actualiza_registro(tabla, campo, valores):
+    """ Actualiza un registro en tabla """
     # Se realiza la conexión a la base de datos
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
@@ -106,12 +101,23 @@ def u_autor(id, campo, valor):
         # Se crea la consulta SQL
         sql = "update {} set {}=? where id{}=?".format(tabla, campo, tabla)
         # Se crea la tupla de valores
-        valores = (valor, id)
         # Se ejecuta la consulta SQL agregando los valores de forma segura
         cur.execute(sql, valores)
         # Se ejecuta un commit para indicar a la BD que la actualización se
         # ejecute como una operación atómica.
         conn.commit()
+
+
+@crud.command()
+@click.argument("id")
+@click.argument("campo")
+@click.argument("valor")
+def u_autor(id, campo, valor):
+    """ Actualiza los datos de un Autor """
+    # Variables necesarias para actualizar un campo en un registro
+    tabla = "Autor"
+    valores = (valor, id)
+    actualiza_registro(tabla, campo, valores)
 
     # Se muestra un mensaje al usuario
     print("Se ha actualizado el registro {} en la tabla {}".format(id, tabla))
