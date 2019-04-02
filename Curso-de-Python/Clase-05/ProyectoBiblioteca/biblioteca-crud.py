@@ -123,11 +123,8 @@ def u_autor(id, campo, valor):
     print("Se ha actualizado el registro {} en la tabla {}".format(id, tabla))
 
 
-@crud.command()
-@click.argument("id")
-def d_autor(id):
-    """ Elimina un registro de un Autor """
-    tabla = "Autor"
+def elimina_registro(tabla, valores):
+    """ Elimina un registro en tabla """
     # Se realiza la conexión a la base de datos
     with sqlite3.connect(BD) as conn:
         # Se obtiene un cursor o indice a la base de datos
@@ -135,12 +132,21 @@ def d_autor(id):
         # Se crea la consulta SQL
         sql = "delete from {} where id{}=?".format(tabla, tabla)
         # Se crea la tupla de valores
-        valores = (id,)
         # Se ejecuta la consulta SQL agregando los valores de forma segura
         cur.execute(sql, valores)
         # Se ejecuta un commit para indicar a la BD que la aliminación se
         # ejecute como una operación atómica.
         conn.commit()
+
+
+@crud.command()
+@click.argument("id")
+def d_autor(id):
+    """ Elimina un registro de un Autor """
+    # Variables necesarias para eliminar un campo en un registro
+    tabla = "Autor"
+    valores = (id,)
+    elimina_registro(tabla, valores)
 
     # Se muestra un mensaje al usuario
     print("Se ha eliminado el registro {} en la tabla {}".format(id, tabla))
